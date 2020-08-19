@@ -1,7 +1,8 @@
 <?php
-
+session_start();
 function searchInBD($name, $password){
     // функция для поиска данных в файле с данными
+
     require 'Authentication.php';
     // подключение модели Authentication
     require 'Redirect.php';
@@ -17,7 +18,8 @@ function searchInBD($name, $password){
         } else {
             // В случае если условие не истинно, то в сессию с ключем error присваивается текст ошибки
             // и происходит redirect на главную страницу index.php
-            $_SESSION['error'] = '<p>Неверные данные.</p>';
+            quantityError();
+            $_SESSION['error'] = '<p>Неверные данные</p>';
             redirect('index.php');
         }
     } else {
@@ -28,4 +30,14 @@ function searchInBD($name, $password){
     }
 }
 
+function quantityError(){
+    $text = fopen('count.txt', 'a');
+    fwrite( $text, 1);
+    fclose($text);
+    if( filesize('count.txt') > 2){
+        $_SESSION['warning'] = '<p>Попробуйте еще раз через 5 минут</p>';
+        setcookie('disabled', 'disabled', time() + 300);
+        unlink('count.txt');
+    }
+}
 

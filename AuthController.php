@@ -1,22 +1,23 @@
 <?php
 
-function authenticateUser($request) {
-    // функция для аунтефикации пользователя, который принимает параметр request
+function authenticateUser($request)
+{
+    // Функция для аутентификации пользователя, который принимает параметр request
     session_start();
-    // начало сессии для метода authenticateUser
+    // Начало сессии для метода authenticateUser
     if (isset($request)) {
-        // Если входящие данные были определены то выполяем условие
+        // Если входящие данные были определены то выполняем условие
         $userName = htmlspecialchars((stripslashes($request['username'])), ENT_QUOTES);
-        // данные из формы поля input username присваиваются переменной $userName
+        // Данные из формы поля input username присваиваются переменной $userName
         $password = htmlspecialchars((stripslashes($request['password'])), ENT_QUOTES);
-        // данные из формы поля input $password присваиваются переменной $password
+        // Данные из формы поля input $password присваиваются переменной $password
         require 'Search.php';
         searchInBD($userName, $password);
     }
 }
 
 authenticateUser($_REQUEST);
-// происходит вызов функция для аунтефикации в который передается глобальная переменная $_REQUEST
+// Вызов функции для аутентификации в который передается глобальная переменная $_REQUEST
 
 
 

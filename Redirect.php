@@ -1,6 +1,7 @@
 <?php
 
-function redirect($page) {
-    // Функция которя принимает строку и выполняет redirect на переданую строку
+function redirect($page)
+{
+    // Функция которая принимает строку и выполняет redirect на переданную строку
     header("Location: $page");
 }

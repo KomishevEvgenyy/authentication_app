@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,11 +15,11 @@
 <body>
 <div class="container">
     <div class="text-center mt-5">
-        <?php session_start(); // Начало сессии
-        if (!empty($_SESSION['name'])) { // если сессия name не пуста, то выполним условие
-            $name = $_SESSION['name'];
+        <?php
+        if (!empty($_SESSION['user']['name'])) { // если сессия name не пуста, то выполним условие
+            $name = $_SESSION['user']['name'];
             ?>
-            <h4>Добрый день, <?php echo $name ?></h4>
+            <h4>Добрый день, <?php echo $name; ?></h4>
         <?php } else {
             header("Location: index.php");
             // Иначе выполнится redirect на главную страницу так как пользователь не авторизирован

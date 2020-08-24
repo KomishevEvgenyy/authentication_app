@@ -1,1 +1,1 @@
-username:Nick, password:123; username:Petr, password:2233; username:Ivan, password:qwerty;
+Nick, 202cb962ac59075b964b07152d234b70; Petr, e0f7a4d0ef9b84b83b693bbf3feb8e6e; Ivan, d8578edf8458ce06fbc5bb76a58c5ca4;

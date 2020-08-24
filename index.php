@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,9 +14,8 @@
 </head>
 <body>
 <div class="container">
-    <?php session_start();
-    // Начало сессии для страницы index.php
-    if (!empty($_SESSION['name'])) {
+    <?php
+    if ($_SESSION['user']) {
         header('Location: user_page.php');
         // В случае если сессия name не пуста то выполняем redirect на страницу пользователя.
     } else {
@@ -33,10 +35,10 @@
             </div>
             <button type="submit" name="submit" id="submit" class="btn btn-primary btn-block"
                 <?php
-                if (!empty($_COOKIE['disabled'])) {
+                if ($_COOKIE['disabled']) {
                     // Если куки с именем disabled не является пустой, в кнопку формы добавляем значение disabled
                     echo($_COOKIE['disabled']);
-                    header('Refresh: 300;');
+                    header('Refresh: 5;');
                     // Выполняется обновление страницы через 5 минут
                 }
                 ?>
@@ -45,21 +47,21 @@
         </form>
         <?php } ?>
 
-        <?php if (!empty($_SESSION['error'])) // Если сессия error не пуста, выводим блок с данными в сессии error
+        <?php if (isset($_SESSION['error'])) // Если сессия error не пуста, выводим блок с данными в сессии error
         { ?>
             <div class="alert alert-danger mt-3 text-center" role="alert">
-            <?php echo $_SESSION['error']; ?>
+            <?php echo $_SESSION['error'];
+                  unset($_SESSION['error']);
+            ?>
             </div><?php } ?>
 
         <?php
-        if (!empty($_SESSION['warning'])) {
+        if ($_SESSION['warning']) {
             // Если сессия warning не пуста, выводим блок с данными в сессии warning
             ?>
             <div class="alert alert-danger text-center mt-1" role="alert">
                 <?php echo $_SESSION['warning'];
-                session_unset();
-                session_destroy();
-                // Завершение сессии для страницы index.php
+                unset($_SESSION['warning']);
                 ?>
             </div>
         <?php } ?>

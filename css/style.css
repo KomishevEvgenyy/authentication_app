@@ -1,0 +1,7 @@
+.none{
+    display: none;
+}
+
+.error{
+    border-bottom: 2px solid #f30606;
+}

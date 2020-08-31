@@ -6,15 +6,38 @@ require_once 'Authentication.php';
 
 function authenticateUser($request)
 {
-    // Функция для аутентификации пользователя, который принимает параметр request
+    // Функция для аутентификации пользователя
 
     if (isset($request)) {
         // Если входящие данные были определены то выполняем условие
         $name = htmlspecialchars((stripslashes($request['username'])), ENT_QUOTES);
         // Данные из формы поля input username присваиваются переменной $userName
-        $password = md5(htmlspecialchars((stripslashes($request['password'])), ENT_QUOTES));
+        $password = htmlspecialchars((stripslashes($request['password'])), ENT_QUOTES);
         // Данные из формы поля input $password присваиваются переменной $password
 
+        $errorField = [];
+        // массив для хранения ошибок
+        if ($name === ''){
+            // если поле name не было заполненно то записываем данное поле в массив ошибок
+            $errorField[] = $name;
+        }
+        if ($password === ''){
+            // если поле password не было заполненно то записываем данное поле в массив ошибок
+            $errorField[] = $password;
+        }
+        if (!empty($errorField)){
+            // если массив ошибок заполнен то созданим ответ типа json для отправки его на клиентскую часть
+            $response = [
+                'status' => false,
+                'type' => 1,
+                'message' => 'Поля не заполнены',
+                'fields' => $errorField
+            ];
+            echo json_encode($response);
+            die();
+        }
+        $password = md5($password);
+        // хеширование пароля
         $connect = Connect::connectDB();
 
         if ($connect) {
@@ -26,7 +49,10 @@ function authenticateUser($request)
                 $_SESSION['user'] = [
                     'name' => $name,
                 ];
-                redirect('user_page.php');
+                $response = [
+                    'status' => true
+                ];
+                echo json_encode($response);
 
             } else {
                 /*
@@ -36,35 +62,40 @@ function authenticateUser($request)
                     В случае если условие не истинно, то в сессию с ключом error присваивается текст ошибки
                 и происходит redirect на главную страницу index.php
                 */
-                $text = fopen('count.txt', 'a');
-                // создание файла для записи
-                fwrite($text, 1);
-                // при вводе некорректных данных в конец файла записывается значение 1
-                fclose($text);
-                //закрытие файла
-                if (filesize('count.txt') > 2) {
-                    // если размер файла больше двух байтов (пользователь ввел три раза подряд неверные данные для входа) выполняем условия
-                    $_SESSION['warning'] = '<p>Повторите попытку через 5 минут</p>'; // выводим ошибку на страницу ввода
-                    setcookie('disabled', 'disabled', time() + 5); // создание куки на 5 минут которая в кнопку формы записываем значение disabled
-                    unlink('count.txt'); // удаление ранее созданного текстового файла
-                }
-
-                $_SESSION['error'] = '<p>Неверные данные</p>';
-                redirect('index.php');
-                //redirect('index.php');
+//                $text = fopen('count.txt', 'a');
+//                // создание файла для записи
+//                fwrite($text, 1);
+//                // при вводе некорректных данных в конец файла записывается значение 1
+//                fclose($text);
+//                //закрытие файла
+//                if (filesize('count.txt') > 2) {
+//                    // если размер файла больше двух байтов (пользователь ввел три раза подряд неверные данные для входа) выполняем условия
+//                    $_SESSION['warning'] = '<p>Повторите попытку через 5 минут</p>'; // выводим ошибку на страницу ввода
+//                    setcookie('disabled', 'disabled', time() + 5); // создание куки на 5 минут которая в кнопку формы записываем значение disabled
+//                    unlink('count.txt'); // удаление ранее созданного текстового файла
+//                }
+//
+                $response = [
+                    'status' => false,
+                    'message' => 'Неверные данные'
+                ];
+                echo json_encode($response);
 
             }
         } else {
             // При пустой переменной result из модели Authentication в сессию с ключом error присваивается текст ошибки
             // и происходит redirect на главную страницу index.php
-            $_SESSION['error'] = 'Сервер не отвечает';
-            redirect('index.php');
-            //redirect('index.php');
+            $response = [
+                'status' => false,
+                'message' => 'Сервер не доступен'
+            ];
+            echo json_encode($response);
+
         }
     }
 }
 authenticateUser($_REQUEST);
-var_dump($_REQUEST['password']);
+
 
 
 
